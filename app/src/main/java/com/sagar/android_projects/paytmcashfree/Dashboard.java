@@ -1,9 +1,14 @@
 package com.sagar.android_projects.paytmcashfree;
 
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
@@ -19,6 +24,9 @@ public class Dashboard extends AppCompatActivity {
     float centerX;
     float centerY;
 
+    Menu menu;
+    DrawerLayout drawerLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,8 +36,11 @@ public class Dashboard extends AppCompatActivity {
 
         if (getSupportActionBar() != null) {
             setTitle(String.valueOf("Paytm Free Cash"));
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_button);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+        drawerLayout = findViewById(R.id.drawerlayout);
         appCompatImageViewRupee = findViewById(R.id.appcompatimageview_rupee_dashboard);
 
         appCompatImageViewRupee.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -38,6 +49,23 @@ public class Dashboard extends AppCompatActivity {
                 rotatePicture();
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_dashboard, menu);
+        this.menu = menu;
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            drawerLayout.openDrawer(GravityCompat.START);
+            return true;
+        }
+        return false;
     }
 
     private void rotatePicture() {
@@ -65,4 +93,8 @@ public class Dashboard extends AppCompatActivity {
         appCompatImageViewRupee.startAnimation(rotate3DAnimation);
     }
 
+    private void updateBalanceOnActionBar(String newBalance) {
+        MenuItem balance = menu.findItem(R.id.current_balance);
+        balance.setTitle(String.valueOf(newBalance + " INR"));
+    }
 }

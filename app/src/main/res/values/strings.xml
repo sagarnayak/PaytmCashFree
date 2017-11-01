@@ -11,4 +11,6 @@
     <string name="login">Login</string>
     <string name="title_activity_withdraw">Withdraw</string>
     <string name="click_to_earn">Click To Earn</string>
+    <string name="_0_0_inr">0.0 INR</string>
+    <string name="current_balance">Current Balance</string>
 </resources>
