@@ -6,8 +6,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
+/**
+ * Created by SAGAR KUMAR NAYAK on 2nd NOV 2017.
+ * this is the login activity
+ */
 public class LoginActivity extends AppCompatActivity {
 
+    @SuppressWarnings("FieldCanBeLocal")
     private Button buttonLogin;
 
     @Override

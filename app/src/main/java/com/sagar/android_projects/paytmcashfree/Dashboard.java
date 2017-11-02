@@ -15,6 +15,10 @@ import android.view.animation.LinearInterpolator;
 
 import com.sagar.android_projects.paytmcashfree.util.Rotate3dAnimation;
 
+/**
+ * Created by SAGAR KUMAR NAYAK on 2nd NOV 2017.
+ * this is the dashboard activity.
+ */
 public class Dashboard extends AppCompatActivity {
 
     AppCompatImageView appCompatImageViewRupee;
