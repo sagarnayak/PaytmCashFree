@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="com.sagar.android_projects.paytmcashfree.Launcher">
+    <item
+        android:id="@+id/admin_logout"
+        android:icon="@drawable/logout"
+        android:orderInCategory="100"
+        android:title=""
+        app:showAsAction="always"/>
+</menu>

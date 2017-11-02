@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -36,6 +37,8 @@ public class LoginActivity extends AppCompatActivity {
     private EditText editTextEmail;
     private EditText editTextMobile;
     private EditText editTextDob;
+    @SuppressWarnings("FieldCanBeLocal")
+    private TextView textViewAdminLogin;
 
     FirebaseDatabase database;
     DatabaseReference refForUser;
@@ -51,6 +54,7 @@ public class LoginActivity extends AppCompatActivity {
         editTextEmail = findViewById(R.id.edit_text_email);
         editTextMobile = findViewById(R.id.edit_text_mobile_number);
         editTextDob = findViewById(R.id.edit_text_date_of_birth);
+        textViewAdminLogin = findViewById(R.id.textview_admin_login);
 
 
         database = FirebaseDatabase.getInstance();
@@ -66,6 +70,14 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 proceedForLogin();
+            }
+        });
+
+        textViewAdminLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this, AdminLogin.class));
+                finish();
             }
         });
 
@@ -108,6 +120,7 @@ public class LoginActivity extends AppCompatActivity {
                 editTextMobile.getText().toString().trim(),
                 editTextDob.getText().toString().trim(),
                 0.0,
+                "",
                 ""));
     }
 

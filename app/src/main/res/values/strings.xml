@@ -19,4 +19,11 @@
     <string name="title_activity_about_app">AboutApp</string>
     <string name="title_activity_admin_login">AdminLogin</string>
     <string name="title_activity_with_draw_request_list">WithDrawRequestList</string>
+    <string name="admin_login">Admin Login</string>
+    <string name="enter_master_password">Enter Master Password</string>
+    <string name="no_withdraw_request">No withdraw Request</string>
+    <string name="about_the_app">This is a app to earn money by viewing Ads. just view intresting adds in the app and earn 0.2 INR for each view. when you complete the limit for withdrawn you can just send a request to admin and your money will be withdrawn to your bank account.</string>
+    <string name="admin">Admin</string>
+    <string name="minimum_balance_to_withdraw_is_100_inr">Minimum balance to withdraw is 100 INR.</string>
+    <string name="enter_mobile_number">enter mobile number</string>
 </resources>
