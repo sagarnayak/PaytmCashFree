@@ -81,6 +81,7 @@ public class Dashboard extends AppCompatActivity {
 
         interstitialAd = new InterstitialAd(Dashboard.this);
         interstitialAd.setAdUnitId(KeyWords.INTERSTITIAL_ADD_ID);
+        interstitialAd.loadAd(new AdRequest.Builder().build());
 
         drawerLayout = findViewById(R.id.drawerlayout);
         appCompatImageViewRupee = findViewById(R.id.appcompatimageview_rupee_dashboard);
@@ -242,10 +243,17 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private void showLargerAdd() {
+        interstitialAd.setAdListener(new AdListener(){
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                interstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+        });
         if (interstitialAd.isLoaded()) {
             interstitialAd.show();
         } else {
-            Toasty.info(Dashboard.this, "Please ait. add is loading").show();
+            Toasty.info(Dashboard.this, "Please wait. add is loading").show();
         }
     }
 
