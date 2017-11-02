@@ -28,9 +28,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sagar.android_projects.paytmcashfree.pojo.User;
+import com.sagar.android_projects.paytmcashfree.util.CalendarUtil;
 import com.sagar.android_projects.paytmcashfree.util.KeyWords;
 import com.sagar.android_projects.paytmcashfree.util.NetworkUtil;
 import com.sagar.android_projects.paytmcashfree.util.Rotate3dAnimation;
+
+import java.text.DecimalFormat;
 
 import es.dmoral.toasty.Toasty;
 
@@ -46,6 +49,7 @@ public class Dashboard extends AppCompatActivity {
     TextView textViewAboutApp;
     TextView textViewLogout;
     AdView addViewBanner;
+    AdView adViewMediumBanner;
     TextView textViewClickToEarn;
 
     Rotate3dAnimation rotate3DAnimation;
@@ -90,6 +94,7 @@ public class Dashboard extends AppCompatActivity {
         textViewAboutApp = findViewById(R.id.textview_about_app);
         textViewLogout = findViewById(R.id.textview_logout);
         addViewBanner = findViewById(R.id.adView);
+        adViewMediumBanner = findViewById(R.id.adView_medium);
         textViewClickToEarn = findViewById(R.id.textview_click_to_earn);
 
         AdRequest adRequest = new AdRequest.Builder().build();
@@ -152,14 +157,14 @@ public class Dashboard extends AppCompatActivity {
         appCompatImageViewRupee.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showLargerAdd();
+                showMediumAd();
             }
         });
 
         textViewClickToEarn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showLargerAdd();
+                showMediumAd();
             }
         });
 
@@ -186,7 +191,9 @@ public class Dashboard extends AppCompatActivity {
     private void rotatePicture() {
         centerX = appCompatImageViewRupee.getWidth() / 2.0f;
         centerY = appCompatImageViewRupee.getHeight() / 2.0f;
-        rotate3DAnimation = new Rotate3dAnimation(0f, 360f, centerX, centerY, 0f, true);
+        rotate3DAnimation =
+                new Rotate3dAnimation(0f, 360f, centerX, centerY,
+                        0f, true);
         rotate3DAnimation.setDuration(4000);
         rotate3DAnimation.setFillAfter(true);
         rotate3DAnimation.setRepeatMode(Animation.RESTART);
@@ -242,21 +249,6 @@ public class Dashboard extends AppCompatActivity {
         finish();
     }
 
-    private void showLargerAdd() {
-        interstitialAd.setAdListener(new AdListener(){
-            @Override
-            public void onAdClosed() {
-                super.onAdClosed();
-                interstitialAd.loadAd(new AdRequest.Builder().build());
-            }
-        });
-        if (interstitialAd.isLoaded()) {
-            interstitialAd.show();
-        } else {
-            Toasty.info(Dashboard.this, "Please wait. add is loading").show();
-        }
-    }
-
     private void checkIfConnectedToInternet() {
         if (!NetworkUtil.isConnected(Dashboard.this)) {
             final AlertDialog alertDialog = new AlertDialog.Builder(Dashboard.this).create();
@@ -270,6 +262,140 @@ public class Dashboard extends AppCompatActivity {
             alertDialog.setTitle("Alert");
             alertDialog.setCancelable(false);
             alertDialog.show();
+        }
+    }
+
+    private boolean checkIfAllowedToEarn() {
+        valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                userLoggedIn = dataSnapshot.getValue(User.class);
+                refForUser.removeEventListener(valueEventListener);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        refForUser.addValueEventListener(valueEventListener);
+        if (userLoggedIn.getLastEarningDate().equals("")) {
+            userLoggedIn.setLastEarningDate(CalendarUtil.getToday());
+            userLoggedIn.setTodayEarning(0.0);
+            refForUser.setValue(userLoggedIn);
+            return true;
+        } else {
+            if (userLoggedIn.getLastEarningDate().equals(CalendarUtil.getToday())) {
+                if (userLoggedIn.getTodayEarning() < 0.2) {
+                    return true;
+                }
+            } else {
+                userLoggedIn.setLastEarningDate(CalendarUtil.getToday());
+                userLoggedIn.setTodayEarning(0.0);
+                refForUser.setValue(userLoggedIn);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void showMediumAd() {
+        if (!checkIfAllowedToEarn()) {
+            Toasty.error(Dashboard.this, "Todays lomit of 0.2 INR is limit. try tomorrow.", 5000).show();
+            return;
+        }
+        adViewMediumBanner.setVisibility(View.VISIBLE);
+        AdRequest adRequestMedium = new AdRequest.Builder().build();
+        adViewMediumBanner.loadAd(adRequestMedium);
+
+        Toasty.info(Dashboard.this, "Wait for 10 seconds to earn 0.1 INR", 5000).show();
+
+        adViewMediumBanner.setAdListener(new AdListener() {
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+            }
+        });
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(10000);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adViewMediumBanner.setVisibility(View.GONE);
+                            adViewMediumBanner.destroy();
+                            creditMonetToUser();
+                            showLargerAdd();
+                        }
+                    });
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private void creditMonetToUser() {
+        valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                userLoggedIn = dataSnapshot.getValue(User.class);
+                userLoggedIn.setCurrentBalance(userLoggedIn.getCurrentBalance() + 0.1);
+                DecimalFormat precision = new DecimalFormat("0.00");
+                userLoggedIn.setCurrentBalance(Double.parseDouble(precision.format(userLoggedIn.getCurrentBalance())));
+                userLoggedIn.setTodayEarning(userLoggedIn.getTodayEarning() + 0.1);
+                userLoggedIn.setTodayEarning(Double.parseDouble(precision.format(userLoggedIn.getTodayEarning())));
+                refForUser.removeEventListener(valueEventListener);
+                refForUser.setValue(userLoggedIn);
+                updateBalanceOnActionBar(String.valueOf(userLoggedIn.getCurrentBalance()));
+                textViewCurrentBalNav.setText(String.valueOf(userLoggedIn.getCurrentBalance() + " INR"));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+        refForUser.addValueEventListener(valueEventListener);
+    }
+
+    private void showLargerAdd() {
+        Toasty.info(Dashboard.this, "Click on add to earn 0.1 INR", 5000).show();
+        interstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                interstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+
+            @Override
+            public void onAdOpened() {
+                super.onAdOpened();
+            }
+
+            @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+            }
+
+            @Override
+            public void onAdImpression() {
+                super.onAdImpression();
+            }
+
+            @Override
+            public void onAdLeftApplication() {
+                super.onAdLeftApplication();
+                creditMonetToUser();
+            }
+        });
+        if (interstitialAd.isLoaded()) {
+            interstitialAd.show();
+        } else {
+            Toasty.info(Dashboard.this, "Please wait. add is loading").show();
         }
     }
 }

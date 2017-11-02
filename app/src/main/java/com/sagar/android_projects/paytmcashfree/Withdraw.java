@@ -82,6 +82,14 @@ public class Withdraw extends AppCompatActivity {
         buttonRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (editTextMobileNumber.getText().length() == 0) {
+                    Toasty.error(Withdraw.this, "Please enter mobile number").show();
+                    return;
+                }
+                if (!editTextMobileNumber.getText().toString().matches("^[789]\\d{9}$")) {
+                    Toasty.error(Withdraw.this, "PLease enter a valid mobile number").show();
+                    return;
+                }
                 if (user.getCurrentBalance() < 100) {
                     Toasty.info(Withdraw.this,
                             "Minimum balance for withdraw is 100 INR", 3000).show();

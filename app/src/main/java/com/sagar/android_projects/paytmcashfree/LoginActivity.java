@@ -119,9 +119,11 @@ public class LoginActivity extends AppCompatActivity {
                 editTextEmail.getText().toString().trim(),
                 editTextMobile.getText().toString().trim(),
                 editTextDob.getText().toString().trim(),
-                0.0,
+                0.0f,
                 "",
-                ""));
+                "",
+                "",
+                0.0));
     }
 
     private void showDatePickerForDOB() {

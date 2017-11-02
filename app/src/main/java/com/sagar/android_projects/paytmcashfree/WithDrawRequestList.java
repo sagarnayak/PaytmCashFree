@@ -110,6 +110,8 @@ public class WithDrawRequestList extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.admin_logout) {
             gotoAdminLogin();
+        } else if (item.getItemId() == android.R.id.home) {
+            gotoAdminLogin();
         }
         return true;
     }
