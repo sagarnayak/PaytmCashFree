@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.sagar.android_projects.paytmcashfree.LoginActivity"
-    tools:showIn="@layout/activity_login">
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="match_parent"
+                                             android:background="@color/colorPrimary"
+                                             app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                                             tools:context="com.sagar.android_projects.paytmcashfree.LoginActivity"
+                                             tools:showIn="@layout/activity_login">
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/icon_on_login"
@@ -18,7 +18,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias=".2"
-        app:srcCompat="@drawable/ic_rupee_for_login" />
+        app:srcCompat="@drawable/ic_rupee_for_login"/>
 
     <EditText
         android:id="@+id/edit_text_name"
@@ -33,7 +33,7 @@
         android:theme="@style/Theme.App.Base"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/icon_on_login" />
+        app:layout_constraintTop_toBottomOf="@+id/icon_on_login"/>
 
     <EditText
         android:id="@+id/edit_text_email"
@@ -49,7 +49,7 @@
         android:theme="@style/Theme.App.Base"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_name" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_name"/>
 
     <EditText
         android:id="@+id/edit_text_mobile_number"
@@ -60,12 +60,13 @@
         android:layout_marginTop="16dp"
         android:hint="@string/mobile_number"
         android:inputType="phone"
+        android:maxLength="10"
         android:textColor="@android:color/white"
         android:textColorHint="@color/fade_white"
         android:theme="@style/Theme.App.Base"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_email" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_email"/>
 
     <EditText
         android:id="@+id/edit_text_date_of_birth"
@@ -74,13 +75,14 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
+        android:focusable="false"
         android:hint="@string/date_of_birth"
         android:textColor="@android:color/white"
         android:textColorHint="@color/fade_white"
         android:theme="@style/Theme.App.Base"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_mobile_number" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_mobile_number"/>
 
     <Button
         android:id="@+id/button_login"
@@ -95,6 +97,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_date_of_birth" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_date_of_birth"/>
 
 </android.support.constraint.ConstraintLayout>

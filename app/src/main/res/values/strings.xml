@@ -13,4 +13,10 @@
     <string name="click_to_earn">Click To Earn</string>
     <string name="_0_0_inr">0.0 INR</string>
     <string name="current_balance">Current Balance</string>
+    <string name="withdraw">Withdraw</string>
+    <string name="about_app">About App</string>
+    <string name="logout">Logout</string>
+    <string name="title_activity_about_app">AboutApp</string>
+    <string name="title_activity_admin_login">AdminLogin</string>
+    <string name="title_activity_with_draw_request_list">WithDrawRequestList</string>
 </resources>

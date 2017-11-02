@@ -1,5 +1,6 @@
 package com.sagar.android_projects.paytmcashfree;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -9,10 +10,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
+import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.sagar.android_projects.paytmcashfree.pojo.User;
+import com.sagar.android_projects.paytmcashfree.util.KeyWords;
 import com.sagar.android_projects.paytmcashfree.util.Rotate3dAnimation;
 
 /**
@@ -22,6 +32,10 @@ import com.sagar.android_projects.paytmcashfree.util.Rotate3dAnimation;
 public class Dashboard extends AppCompatActivity {
 
     AppCompatImageView appCompatImageViewRupee;
+    TextView textViewCurrentBalNav;
+    TextView textViewWithdraw;
+    TextView textViewAboutApp;
+    TextView textViewLogout;
 
     Rotate3dAnimation rotate3DAnimation;
 
@@ -30,6 +44,12 @@ public class Dashboard extends AppCompatActivity {
 
     Menu menu;
     DrawerLayout drawerLayout;
+
+    FirebaseDatabase database;
+    DatabaseReference refForUser;
+    ValueEventListener valueEventListener;
+
+    User userLoggedIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +66,59 @@ public class Dashboard extends AppCompatActivity {
 
         drawerLayout = findViewById(R.id.drawerlayout);
         appCompatImageViewRupee = findViewById(R.id.appcompatimageview_rupee_dashboard);
+        textViewCurrentBalNav = findViewById(R.id.textview_current_balance_value);
+        textViewWithdraw = findViewById(R.id.textview_withdraw);
+        textViewAboutApp = findViewById(R.id.textview_about_app);
+        textViewLogout = findViewById(R.id.textview_logout);
 
         appCompatImageViewRupee.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 rotatePicture();
+            }
+        });
+
+        database = FirebaseDatabase.getInstance();
+        refForUser = database
+                .getReference("User")
+                .child(getSharedPreferences(KeyWords.SHARED_PREFERENCE_NAME, MODE_PRIVATE)
+                        .getString(KeyWords.LOGGED_IN_MOBILE_NUMBER, ""));
+
+        valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                userLoggedIn = dataSnapshot.getValue(User.class);
+
+                updateBalanceOnActionBar(String.valueOf(userLoggedIn.getCurrentBalance()));
+                textViewCurrentBalNav.setText(String.valueOf(userLoggedIn.getCurrentBalance() + " INR"));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        refForUser.addValueEventListener(valueEventListener);
+
+        textViewWithdraw.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Dashboard.this, Withdraw.class));
+            }
+        });
+
+        textViewAboutApp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Dashboard.this, AboutApp.class));
+            }
+        });
+
+        textViewLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logout();
             }
         });
     }
@@ -100,5 +168,14 @@ public class Dashboard extends AppCompatActivity {
     private void updateBalanceOnActionBar(String newBalance) {
         MenuItem balance = menu.findItem(R.id.current_balance);
         balance.setTitle(String.valueOf(newBalance + " INR"));
+    }
+
+    private void logout() {
+        getSharedPreferences(KeyWords.SHARED_PREFERENCE_NAME, MODE_PRIVATE)
+                .edit()
+                .putBoolean(KeyWords.LOGGED_IN_STATUS, false)
+                .apply();
+        startActivity(new Intent(Dashboard.this, LoginActivity.class));
+        finish();
     }
 }

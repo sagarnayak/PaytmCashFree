@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="match_parent">
 
     <View
         android:id="@+id/view"
@@ -12,7 +12,7 @@
         app:layout_constraintDimensionRatio="1,1.5"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
         android:id="@+id/textview_current_balance"
@@ -25,19 +25,75 @@
         app:layout_constraintBottom_toTopOf="@+id/textview_current_balance_value"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintVertical_chainStyle="packed"/>
 
     <TextView
         android:id="@+id/textview_current_balance_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="0.0 INR"
         android:textColor="@android:color/black"
         android:textSize="40sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textview_current_balance" />
+        app:layout_constraintTop_toBottomOf="@+id/textview_current_balance"/>
+
+    <TextView
+        android:id="@+id/textview_withdraw"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:textSize="18sp"
+        android:text="@string/withdraw"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@android:color/background_dark"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_withdraw"/>
+
+    <TextView
+        android:id="@+id/textview_about_app"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="@string/about_app"
+        android:textSize="18sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_withdraw"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@android:color/background_dark"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_about_app"/>
+
+    <TextView
+        android:id="@+id/textview_logout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:textSize="18sp"
+        android:text="@string/logout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_about_app"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@android:color/background_dark"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_logout"/>
 
 </android.support.constraint.ConstraintLayout>
