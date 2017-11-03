@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/PaytmCashFree.iml" filepath="$PROJECT_DIR$/PaytmCashFree.iml" />
+      <module fileurl="file://D:\Android_Projects\PaytmCashFree\PaytmCashFree.iml" filepath="D:\Android_Projects\PaytmCashFree\PaytmCashFree.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://D:\Android_Projects\PaytmCashFree\app\app.iml" filepath="D:\Android_Projects\PaytmCashFree\app\app.iml" />
     </modules>
   </component>
 </project>
