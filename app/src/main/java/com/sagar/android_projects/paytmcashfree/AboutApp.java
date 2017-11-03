@@ -48,4 +48,10 @@ public class AboutApp extends AppCompatActivity {
         }
         return true;
     }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(AboutApp.this, Dashboard.class));
+        finish();
+    }
 }

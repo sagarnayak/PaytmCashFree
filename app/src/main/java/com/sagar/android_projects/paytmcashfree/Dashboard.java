@@ -301,7 +301,7 @@ public class Dashboard extends AppCompatActivity {
 
     private void showMediumAd() {
         if (!checkIfAllowedToEarn()) {
-            Toasty.error(Dashboard.this, "Todays limit for 0.2 INR earning is over. please try tomorrow.", 10000).show();
+            Toasty.error(Dashboard.this, "Today's limit for 0.2 INR earning is over. please try tomorrow.", 10000).show();
             return;
         }
         adViewMediumBanner.setVisibility(View.VISIBLE);

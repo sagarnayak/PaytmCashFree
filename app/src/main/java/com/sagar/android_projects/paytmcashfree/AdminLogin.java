@@ -87,6 +87,12 @@ public class AdminLogin extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(AdminLogin.this, LoginActivity.class));
+        finish();
+    }
+
     private void gotoWithdrawReqList() {
         startActivity(new Intent(AdminLogin.this, WithDrawRequestList.class));
         finish();

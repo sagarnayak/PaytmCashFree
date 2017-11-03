@@ -107,6 +107,11 @@ public class WithDrawRequestList extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        gotoAdminLogin();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.admin_logout) {
             gotoAdminLogin();
