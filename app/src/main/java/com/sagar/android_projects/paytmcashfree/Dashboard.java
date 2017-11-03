@@ -301,7 +301,7 @@ public class Dashboard extends AppCompatActivity {
 
     private void showMediumAd() {
         if (!checkIfAllowedToEarn()) {
-            Toasty.error(Dashboard.this, "Todays lomit of 0.2 INR is limit. try tomorrow.", 5000).show();
+            Toasty.error(Dashboard.this, "Todays limit for 0.2 INR earning is over. please try tomorrow.", 10000).show();
             return;
         }
         adViewMediumBanner.setVisibility(View.VISIBLE);
@@ -326,8 +326,7 @@ public class Dashboard extends AppCompatActivity {
                         @Override
                         public void run() {
                             adViewMediumBanner.setVisibility(View.GONE);
-                            adViewMediumBanner.destroy();
-                            creditMonetToUser();
+                            creditMoneyToUser();
                             showLargerAdd();
                         }
                     });
@@ -338,7 +337,7 @@ public class Dashboard extends AppCompatActivity {
         }).start();
     }
 
-    private void creditMonetToUser() {
+    private void creditMoneyToUser() {
         valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -389,7 +388,8 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public void onAdLeftApplication() {
                 super.onAdLeftApplication();
-                creditMonetToUser();
+                if (checkIfAllowedToEarn())
+                    creditMoneyToUser();
             }
         });
         if (interstitialAd.isLoaded()) {
