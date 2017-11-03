@@ -11,16 +11,16 @@ public class KeyWords {
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //testing
-    public static final String AD_MOB_ID = "ca-app-pub-8556379853940912~7813733110";
+    /*public static final String AD_MOB_ID = "ca-app-pub-8556379853940912~7813733110";
     public static final String BANNER_AD_ID="ca-app-pub-3940256099942544/6300978111";
-    public static final String INTERSTITIAL_ADD_ID = "ca-app-pub-3940256099942544/1033173712";
+    public static final String INTERSTITIAL_ADD_ID = "ca-app-pub-3940256099942544/1033173712";*/
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //live
-    /*public static final String AD_MOB_ID = "ca-app-pub-8556379853940912~7813733110";
+    public static final String AD_MOB_ID = "ca-app-pub-8556379853940912~7813733110";
     public static final String BANNER_AD_ID="ca-app-pub-8556379853940912/2916629651";
-    public static final String INTERSTITIAL_ADD_ID = "ca-app-pub-8556379853940912/4016645259";*/
+    public static final String INTERSTITIAL_ADD_ID = "ca-app-pub-8556379853940912/4016645259";
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
 }

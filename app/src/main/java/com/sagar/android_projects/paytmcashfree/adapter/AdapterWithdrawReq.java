@@ -32,7 +32,7 @@ public class AdapterWithdrawReq extends RecyclerView.Adapter<AdapterWithdrawReq.
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.textViewName.setText(userArrayList.get(position).getName());
         holder.textViewBalance.setText(String.valueOf(userArrayList.get(position).getCurrentBalance() + " INR"));
-        holder.textViewMobile.setText(userArrayList.get(position).getMobile());
+        holder.textViewMobile.setText(userArrayList.get(position).getReqMobileNumber());
         holder.textViewReqDate.setText(String.valueOf("Request Date: " + userArrayList.get(position).getWithdrawRequestDate()));
     }
 

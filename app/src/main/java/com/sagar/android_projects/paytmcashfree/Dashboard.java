@@ -47,6 +47,7 @@ public class Dashboard extends AppCompatActivity {
     TextView textViewCurrentBalNav;
     TextView textViewWithdraw;
     TextView textViewAboutApp;
+    TextView textViewContact;
     TextView textViewLogout;
     AdView addViewBanner;
     AdView adViewMediumBanner;
@@ -99,6 +100,7 @@ public class Dashboard extends AppCompatActivity {
         textViewCurrentBalNav = findViewById(R.id.textview_current_balance_value);
         textViewWithdraw = findViewById(R.id.textview_withdraw);
         textViewAboutApp = findViewById(R.id.textview_about_app);
+        textViewContact=findViewById(R.id.textview_contact);
         textViewLogout = findViewById(R.id.textview_logout);
         addViewBanner = findViewById(R.id.adView);
         adViewMediumBanner = findViewById(R.id.adView_medium);
@@ -166,6 +168,14 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Dashboard.this, AboutApp.class));
+                finish();
+            }
+        });
+
+        textViewContact.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Dashboard.this, ContactUs.class));
                 finish();
             }
         });
@@ -395,7 +405,7 @@ public class Dashboard extends AppCompatActivity {
     private void tryToShowLargerAdd() {
         final AlertDialog alertDialog = new AlertDialog.Builder(Dashboard.this).create();
         alertDialog.setTitle("Bonus");
-        alertDialog.setMessage("Click on a add and get 0.2 INR instantly");
+        alertDialog.setMessage("Click on a ad and get 0.2 INR instantly");
         alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Get it", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -413,7 +423,7 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private void showLargerAdd() {
-        Toasty.info(Dashboard.this, "Click on add to earn 0.1 INR", 5000).show();
+        Toasty.info(Dashboard.this, "Click on ad to earn 0.1 INR", 5000).show();
         interstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdClosed() {
@@ -445,7 +455,7 @@ public class Dashboard extends AppCompatActivity {
         if (interstitialAd.isLoaded()) {
             interstitialAd.show();
         } else {
-            Toasty.info(Dashboard.this, "Please wait. add is loading").show();
+            Toasty.info(Dashboard.this, "Please wait. ad is loading").show();
         }
     }
 

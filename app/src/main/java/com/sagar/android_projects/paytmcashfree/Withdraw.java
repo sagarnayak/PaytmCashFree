@@ -107,8 +107,8 @@ public class Withdraw extends AppCompatActivity {
                 refForUser.setValue(user);
 
                 Toasty.success(Withdraw.this,
-                        "Your withdraw request has been sent to admin. you will be contacted to " +
-                                user.getReqMobileNumber() + " mobile number soon", 5000).show();
+                        "Your withdraw request has been sent to admin. money will be sent to paytm number " +
+                                user.getReqMobileNumber() + " soon", 5000).show();
             }
         });
     }

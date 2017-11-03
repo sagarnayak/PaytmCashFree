@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                             xmlns:app="http://schemas.android.com/apk/res-auto"
-                                             xmlns:tools="http://schemas.android.com/tools"
-                                             android:layout_width="match_parent"
-                                             android:layout_height="match_parent"
-                                             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                                             tools:context="com.sagar.android_projects.paytmcashfree.Withdraw"
-                                             tools:showIn="@layout/activity_withdraw">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.sagar.android_projects.paytmcashfree.Withdraw"
+    tools:showIn="@layout/activity_withdraw">
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/icon_on_withdraw"
@@ -18,7 +18,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias=".1"
         app:layout_constraintVertical_chainStyle="packed"
-        app:srcCompat="@drawable/ic_rupee_for_login"/>
+        app:srcCompat="@drawable/ic_rupee_for_login" />
 
     <TextView
         android:id="@+id/textview_current_balance_heading_withdraw"
@@ -32,7 +32,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/icon_on_withdraw"
         app:layout_constraintVertical_bias=".2"
-        app:layout_constraintVertical_chainStyle="packed"/>
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
         android:id="@+id/textview_current_balance_value_heading_withdraw"
@@ -43,7 +43,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textview_current_balance_heading_withdraw"/>
+        app:layout_constraintTop_toBottomOf="@+id/textview_current_balance_heading_withdraw" />
 
     <TextView
         android:id="@+id/textview_min_bal_instruction_withdraw"
@@ -54,7 +54,7 @@
         android:textColor="@android:color/holo_red_light"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textview_current_balance_value_heading_withdraw"/>
+        app:layout_constraintTop_toBottomOf="@+id/textview_current_balance_value_heading_withdraw" />
 
     <EditText
         android:id="@+id/edit_text_mobile_number_withdraw"
@@ -63,7 +63,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:hint="@string/enter_mobile_number"
+        android:hint="@string/paytm_number"
         android:inputType="phone"
         android:maxLength="10"
         android:textColor="@android:color/black"
@@ -72,7 +72,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textview_min_bal_instruction_withdraw"
-        app:layout_constraintVertical_chainStyle="packed"/>
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <Button
         android:id="@+id/button_req_for_withdraw"
@@ -86,6 +86,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_mobile_number_withdraw"/>
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_mobile_number_withdraw" />
 
 </android.support.constraint.ConstraintLayout>
