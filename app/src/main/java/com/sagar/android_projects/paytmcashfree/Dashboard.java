@@ -35,8 +35,6 @@ import com.sagar.android_projects.paytmcashfree.util.KeyWords;
 import com.sagar.android_projects.paytmcashfree.util.NetworkUtil;
 import com.sagar.android_projects.paytmcashfree.util.Rotate3dAnimation;
 
-import java.text.DecimalFormat;
-
 import es.dmoral.toasty.Toasty;
 
 /**
@@ -173,8 +171,6 @@ public class Dashboard extends AppCompatActivity {
         checkIfConnectedToInternet();
 
         Thread.setDefaultUncaughtExceptionHandler(new CustomExcetptionHandler(Environment.getExternalStorageDirectory().getPath()));
-
-        throw new NullPointerException();
     }
 
     @Override
@@ -349,10 +345,9 @@ public class Dashboard extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 userLoggedIn = dataSnapshot.getValue(User.class);
                 userLoggedIn.setCurrentBalance(userLoggedIn.getCurrentBalance() + 0.1);
-                DecimalFormat precision = new DecimalFormat("0.00");
-                userLoggedIn.setCurrentBalance(Double.parseDouble(precision.format(userLoggedIn.getCurrentBalance())));
+                userLoggedIn.setCurrentBalance(round(userLoggedIn.getCurrentBalance(), 2));
                 userLoggedIn.setTodayEarning(userLoggedIn.getTodayEarning() + 0.1);
-                userLoggedIn.setTodayEarning(Double.parseDouble(precision.format(userLoggedIn.getTodayEarning())));
+                userLoggedIn.setTodayEarning(round(userLoggedIn.getTodayEarning(), 2));
                 refForUser.removeEventListener(valueEventListener);
                 refForUser.setValue(userLoggedIn);
                 updateBalanceOnActionBar(String.valueOf(userLoggedIn.getCurrentBalance()));
@@ -403,5 +398,14 @@ public class Dashboard extends AppCompatActivity {
         } else {
             Toasty.info(Dashboard.this, "Please wait. add is loading").show();
         }
+    }
+
+    private double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (double) tmp / factor;
     }
 }
