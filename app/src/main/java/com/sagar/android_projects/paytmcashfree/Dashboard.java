@@ -71,7 +71,9 @@ public class Dashboard extends AppCompatActivity {
 
     private double dailyLimit;
 
-    private double dailyBannerThreshold = 1.9;
+    private double dailyBannerThreshold = 1.8;
+
+    private boolean readyToClickAd = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -321,6 +323,9 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private void showMediumAd() {
+        if (!readyToClickAd)
+            return;
+        readyToClickAd = false;
         if (!checkIfAllowedToEarn()) {
             Toasty.error(Dashboard.this, "Today's limit for " + dailyLimit + " INR earning is over. please try tomorrow.", 10000).show();
             return;
@@ -372,6 +377,7 @@ public class Dashboard extends AppCompatActivity {
                 textViewCurrentBalNav.setText(String.valueOf(userLoggedIn.getCurrentBalance() + " INR"));
                 if (userLoggedIn.getTodayEarning() == dailyBannerThreshold)
                     tryToShowLargerAdd();
+                readyToClickAd = true;
             }
 
             @Override
@@ -429,8 +435,7 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public void onAdLeftApplication() {
                 super.onAdLeftApplication();
-                if (checkIfAllowedToEarn())
-                    creditMoneyToUser(0.2);
+                creditMoneyToUser(0.2);
             }
         });
         if (interstitialAd.isLoaded()) {
