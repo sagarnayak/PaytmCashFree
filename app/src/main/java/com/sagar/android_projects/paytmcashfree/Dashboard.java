@@ -3,6 +3,7 @@ package com.sagar.android_projects.paytmcashfree;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
@@ -29,6 +30,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.sagar.android_projects.paytmcashfree.pojo.User;
 import com.sagar.android_projects.paytmcashfree.util.CalendarUtil;
+import com.sagar.android_projects.paytmcashfree.util.CustomExcetptionHandler;
 import com.sagar.android_projects.paytmcashfree.util.KeyWords;
 import com.sagar.android_projects.paytmcashfree.util.NetworkUtil;
 import com.sagar.android_projects.paytmcashfree.util.Rotate3dAnimation;
@@ -169,6 +171,10 @@ public class Dashboard extends AppCompatActivity {
         });
 
         checkIfConnectedToInternet();
+
+        Thread.setDefaultUncaughtExceptionHandler(new CustomExcetptionHandler(Environment.getExternalStorageDirectory().getPath()));
+
+        throw new NullPointerException();
     }
 
     @Override

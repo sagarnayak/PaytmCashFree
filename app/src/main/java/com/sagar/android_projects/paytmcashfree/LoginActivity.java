@@ -3,8 +3,12 @@ package com.sagar.android_projects.paytmcashfree;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -82,6 +86,26 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         checkIfLoggedIn();
+
+        isStoragePermissionGranted();
+    }
+
+    public boolean isStoragePermissionGranted() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Log.v("sdfgbdsfb", "Permission is granted");
+                return true;
+            } else {
+
+                Log.v("sdfgbdsfb", "Permission is revoked");
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                return false;
+            }
+        } else { //permission is automatically granted on sdk<23 upon installation
+            Log.v("sdfgbdsfb", "Permission is granted");
+            return true;
+        }
     }
 
     private void proceedForLogin() {
