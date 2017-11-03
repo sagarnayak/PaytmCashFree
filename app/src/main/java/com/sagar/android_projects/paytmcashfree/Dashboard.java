@@ -62,11 +62,16 @@ public class Dashboard extends AppCompatActivity {
 
     FirebaseDatabase database;
     DatabaseReference refForUser;
+    DatabaseReference refForParams;
     ValueEventListener valueEventListener;
 
     User userLoggedIn;
 
     InterstitialAd interstitialAd;
+
+    private double dailyLimit;
+
+    private double dailyBannerThreshold = 1.9;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +118,20 @@ public class Dashboard extends AppCompatActivity {
                 .getReference("User")
                 .child(getSharedPreferences(KeyWords.SHARED_PREFERENCE_NAME, MODE_PRIVATE)
                         .getString(KeyWords.LOGGED_IN_MOBILE_NUMBER, ""));
+
+        refForParams = database.getReference("params").child("dailyLimit");
+
+        refForParams.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                dailyLimit = Double.parseDouble(dataSnapshot.getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         valueEventListener = new ValueEventListener() {
             @Override
@@ -288,7 +307,7 @@ public class Dashboard extends AppCompatActivity {
             return true;
         } else {
             if (userLoggedIn.getLastEarningDate().equals(CalendarUtil.getToday())) {
-                if (userLoggedIn.getTodayEarning() < 0.2) {
+                if (userLoggedIn.getTodayEarning() < dailyLimit) {
                     return true;
                 }
             } else {
@@ -303,14 +322,14 @@ public class Dashboard extends AppCompatActivity {
 
     private void showMediumAd() {
         if (!checkIfAllowedToEarn()) {
-            Toasty.error(Dashboard.this, "Today's limit for 0.2 INR earning is over. please try tomorrow.", 10000).show();
+            Toasty.error(Dashboard.this, "Today's limit for " + dailyLimit + " INR earning is over. please try tomorrow.", 10000).show();
             return;
         }
         adViewMediumBanner.setVisibility(View.VISIBLE);
         AdRequest adRequestMedium = new AdRequest.Builder().build();
         adViewMediumBanner.loadAd(adRequestMedium);
 
-        Toasty.info(Dashboard.this, "Wait for 10 seconds to earn 0.1 INR", 5000).show();
+        Toasty.info(Dashboard.this, "Wait for 10 seconds to earn 0.01 INR", 5000).show();
 
         adViewMediumBanner.setAdListener(new AdListener() {
             @Override
@@ -328,8 +347,7 @@ public class Dashboard extends AppCompatActivity {
                         @Override
                         public void run() {
                             adViewMediumBanner.setVisibility(View.GONE);
-                            creditMoneyToUser();
-                            showLargerAdd();
+                            creditMoneyToUser(0.1);
                         }
                     });
                 } catch (InterruptedException e) {
@@ -339,19 +357,21 @@ public class Dashboard extends AppCompatActivity {
         }).start();
     }
 
-    private void creditMoneyToUser() {
+    private void creditMoneyToUser(final double amount) {
         valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 userLoggedIn = dataSnapshot.getValue(User.class);
-                userLoggedIn.setCurrentBalance(userLoggedIn.getCurrentBalance() + 0.1);
+                userLoggedIn.setCurrentBalance(userLoggedIn.getCurrentBalance() + amount);
                 userLoggedIn.setCurrentBalance(round(userLoggedIn.getCurrentBalance(), 2));
-                userLoggedIn.setTodayEarning(userLoggedIn.getTodayEarning() + 0.1);
+                userLoggedIn.setTodayEarning(userLoggedIn.getTodayEarning() + amount);
                 userLoggedIn.setTodayEarning(round(userLoggedIn.getTodayEarning(), 2));
                 refForUser.removeEventListener(valueEventListener);
                 refForUser.setValue(userLoggedIn);
                 updateBalanceOnActionBar(String.valueOf(userLoggedIn.getCurrentBalance()));
                 textViewCurrentBalNav.setText(String.valueOf(userLoggedIn.getCurrentBalance() + " INR"));
+                if (userLoggedIn.getTodayEarning() == dailyBannerThreshold)
+                    tryToShowLargerAdd();
             }
 
             @Override
@@ -360,6 +380,26 @@ public class Dashboard extends AppCompatActivity {
             }
         };
         refForUser.addValueEventListener(valueEventListener);
+    }
+
+    private void tryToShowLargerAdd() {
+        final AlertDialog alertDialog = new AlertDialog.Builder(Dashboard.this).create();
+        alertDialog.setTitle("Bonus");
+        alertDialog.setMessage("Click on a add and get 0.2 INR instantly");
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Get it", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                showLargerAdd();
+                dialog.dismiss();
+            }
+        });
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "I dont want bonus", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.show();
     }
 
     private void showLargerAdd() {
@@ -390,7 +430,7 @@ public class Dashboard extends AppCompatActivity {
             public void onAdLeftApplication() {
                 super.onAdLeftApplication();
                 if (checkIfAllowedToEarn())
-                    creditMoneyToUser();
+                    creditMoneyToUser(0.2);
             }
         });
         if (interstitialAd.isLoaded()) {
