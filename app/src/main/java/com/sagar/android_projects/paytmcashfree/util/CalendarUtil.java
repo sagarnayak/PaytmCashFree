@@ -4,8 +4,8 @@ import java.util.Calendar;
 
 /**
  * Created by SAGAR on 11/2/2017.
+ * class to generate the current date in the required format,
  */
-
 public class CalendarUtil {
     public static String getToday() {
         return String.valueOf(

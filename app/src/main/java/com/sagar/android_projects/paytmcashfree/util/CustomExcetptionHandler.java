@@ -13,6 +13,7 @@ import java.util.Date;
 
 /**
  * Created by sagar on 11/3/2017.
+ * custom exception handler.
  */
 public class CustomExcetptionHandler implements Thread.UncaughtExceptionHandler {
 
