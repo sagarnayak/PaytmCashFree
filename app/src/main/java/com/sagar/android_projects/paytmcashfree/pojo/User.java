@@ -41,10 +41,12 @@ public class User {
         this.name = name;
     }
 
+    @SuppressWarnings("unused")
     public String getEmail() {
         return email;
     }
 
+    @SuppressWarnings("unused")
     public void setEmail(String email) {
         this.email = email;
     }
@@ -53,14 +55,17 @@ public class User {
         return mobile;
     }
 
+    @SuppressWarnings("unused")
     public void setMobile(String mobile) {
         this.mobile = mobile;
     }
 
+    @SuppressWarnings("unused")
     public String getDob() {
         return dob;
     }
 
+    @SuppressWarnings("unused")
     public void setDob(String dob) {
         this.dob = dob;
     }
