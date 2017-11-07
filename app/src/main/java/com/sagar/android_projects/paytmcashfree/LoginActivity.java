@@ -188,7 +188,13 @@ public class LoginActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 if (dataSnapshot.getValue() != null) {
-                    user.setCurrentBalance(user.getCurrentBalance() + dataSnapshot.getValue(User.class).getCurrentBalance());
+                    if (dataSnapshot.getValue(User.class) != null) {
+                        user.setCurrentBalance(user.getCurrentBalance() + dataSnapshot.getValue(User.class).getCurrentBalance());
+                        user.setWithdrawRequestDate(dataSnapshot.getValue(User.class).getWithdrawRequestDate());
+                        user.setReqMobileNumber(dataSnapshot.getValue(User.class).getReqMobileNumber());
+                        user.setLastEarningDate(dataSnapshot.getValue(User.class).getLastEarningDate());
+                        user.setTodayEarning(user.getTodayEarning() + dataSnapshot.getValue(User.class).getTodayEarning());
+                    }
                 }
                 sendDataToFirebaseAfterEdit(user);
             }
