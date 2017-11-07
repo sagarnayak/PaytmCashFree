@@ -8,6 +8,7 @@ public class KeyWords {
     public static final String SHARED_PREFERENCE_NAME = "SHARED_PREFERENCE_NAME";
     public static final String LOGGED_IN_MOBILE_NUMBER = "LOGGED_IN_MOBILE_NUMBER";
     public static final String LOGGED_IN_STATUS = "LOGGED_IN_STATUS";
+    public static final String NUMBER_OF_CLICKS = "NUMBER_OF_CLICKS";
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //testing

@@ -50,7 +50,6 @@ public class Dashboard extends AppCompatActivity {
     TextView textViewContact;
     TextView textViewLogout;
     AdView addViewBanner;
-    AdView adViewMediumBanner;
     TextView textViewClickToEarn;
 
     Rotate3dAnimation rotate3DAnimation;
@@ -69,12 +68,15 @@ public class Dashboard extends AppCompatActivity {
     User userLoggedIn;
 
     InterstitialAd interstitialAd;
+    InterstitialAd interstitialAdForSmallPrice;
 
     private double dailyLimit;
 
     private double dailyBannerThreshold = 1.8;
 
     private boolean readyToClickAd = false;
+
+    private boolean smallPriceAdClosed = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,15 +97,28 @@ public class Dashboard extends AppCompatActivity {
         interstitialAd.setAdUnitId(KeyWords.INTERSTITIAL_ADD_ID);
         interstitialAd.loadAd(new AdRequest.Builder().build());
 
+        interstitialAdForSmallPrice = new InterstitialAd(Dashboard.this);
+        interstitialAdForSmallPrice.setAdUnitId(KeyWords.INTERSTITIAL_ADD_ID);
+        interstitialAdForSmallPrice.loadAd(new AdRequest.Builder().build());
+
+        interstitialAdForSmallPrice.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                smallPriceAdClosed = true;
+                readyToClickAd = true;
+                interstitialAdForSmallPrice.loadAd(new AdRequest.Builder().build());
+            }
+        });
+
         drawerLayout = findViewById(R.id.drawerlayout);
         appCompatImageViewRupee = findViewById(R.id.appcompatimageview_rupee_dashboard);
         textViewCurrentBalNav = findViewById(R.id.textview_current_balance_value);
         textViewWithdraw = findViewById(R.id.textview_withdraw);
         textViewAboutApp = findViewById(R.id.textview_about_app);
-        textViewContact=findViewById(R.id.textview_contact);
+        textViewContact = findViewById(R.id.textview_contact);
         textViewLogout = findViewById(R.id.textview_logout);
         addViewBanner = findViewById(R.id.adView);
-        adViewMediumBanner = findViewById(R.id.adView_medium);
         textViewClickToEarn = findViewById(R.id.textview_click_to_earn);
 
         AdRequest adRequest = new AdRequest.Builder().build();
@@ -344,18 +359,16 @@ public class Dashboard extends AppCompatActivity {
             readyToClickAd = true;
             return;
         }
-        adViewMediumBanner.setVisibility(View.VISIBLE);
-        AdRequest adRequestMedium = new AdRequest.Builder().build();
-        adViewMediumBanner.loadAd(adRequestMedium);
+        if (interstitialAdForSmallPrice.isLoaded()) {
+            interstitialAdForSmallPrice.show();
+            smallPriceAdClosed = false;
+        } else {
+            Toasty.error(Dashboard.this, "Ad not loaded yet. please try after few seconds", 10000).show();
+            readyToClickAd = true;
+            return;
+        }
 
         Toasty.info(Dashboard.this, "Wait for 10 seconds to earn 0.01 INR", 5000).show();
-
-        adViewMediumBanner.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-                super.onAdLoaded();
-            }
-        });
 
         new Thread(new Runnable() {
             @Override
@@ -365,7 +378,6 @@ public class Dashboard extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            adViewMediumBanner.setVisibility(View.GONE);
                             creditMoneyToUser(0.1);
                         }
                     });
@@ -377,18 +389,26 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private void creditMoneyToUser(final double amount) {
+        if (smallPriceAdClosed) {
+            Toasty.error(Dashboard.this, "Ad Closed before 10 seconds.", 4000).show();
+            return;
+        }
         valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                userLoggedIn = dataSnapshot.getValue(User.class);
-                userLoggedIn.setCurrentBalance(userLoggedIn.getCurrentBalance() + amount);
-                userLoggedIn.setCurrentBalance(round(userLoggedIn.getCurrentBalance(), 2));
-                userLoggedIn.setTodayEarning(userLoggedIn.getTodayEarning() + amount);
-                userLoggedIn.setTodayEarning(round(userLoggedIn.getTodayEarning(), 2));
+                updateNumberOfClick();
                 refForUser.removeEventListener(valueEventListener);
-                refForUser.setValue(userLoggedIn);
-                updateBalanceOnActionBar(String.valueOf(userLoggedIn.getCurrentBalance()));
-                textViewCurrentBalNav.setText(String.valueOf(userLoggedIn.getCurrentBalance() + " INR"));
+                if (shouldAccountBeCredited()) {
+                    userLoggedIn = dataSnapshot.getValue(User.class);
+                    userLoggedIn.setCurrentBalance(userLoggedIn.getCurrentBalance() + amount);
+                    userLoggedIn.setCurrentBalance(round(userLoggedIn.getCurrentBalance(), 2));
+                    userLoggedIn.setTodayEarning(userLoggedIn.getTodayEarning() + amount);
+                    userLoggedIn.setTodayEarning(round(userLoggedIn.getTodayEarning(), 2));
+                    refForUser.setValue(userLoggedIn);
+                    updateBalanceOnActionBar(String.valueOf(userLoggedIn.getCurrentBalance()));
+                    textViewCurrentBalNav.setText(String.valueOf(userLoggedIn.getCurrentBalance() + " INR"));
+                    Toasty.info(Dashboard.this, amount + " credited to you account.", 4000).show();
+                }
                 if (userLoggedIn.getTodayEarning() == dailyBannerThreshold)
                     tryToShowLargerAdd();
                 readyToClickAd = true;
@@ -466,5 +486,24 @@ public class Dashboard extends AppCompatActivity {
         value = value * factor;
         long tmp = Math.round(value);
         return (double) tmp / factor;
+    }
+
+    private void updateNumberOfClick() {
+        getSharedPreferences(KeyWords.SHARED_PREFERENCE_NAME, MODE_PRIVATE)
+                .edit()
+                .putInt(KeyWords.NUMBER_OF_CLICKS,
+                        getSharedPreferences(KeyWords.SHARED_PREFERENCE_NAME, MODE_PRIVATE).getInt(KeyWords.NUMBER_OF_CLICKS, 0) + 1)
+                .apply();
+    }
+
+    private boolean shouldAccountBeCredited() {
+        if (getSharedPreferences(KeyWords.SHARED_PREFERENCE_NAME, MODE_PRIVATE).getInt(KeyWords.NUMBER_OF_CLICKS, 0) == 3) {
+            getSharedPreferences(KeyWords.SHARED_PREFERENCE_NAME, MODE_PRIVATE)
+                    .edit()
+                    .putInt(KeyWords.NUMBER_OF_CLICKS, 0)
+                    .apply();
+            return false;
+        }
+        return true;
     }
 }
