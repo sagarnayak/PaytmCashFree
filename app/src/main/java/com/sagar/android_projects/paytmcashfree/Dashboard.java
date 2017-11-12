@@ -64,6 +64,7 @@ public class Dashboard extends AppCompatActivity {
     DatabaseReference refForUser;
     DatabaseReference refForParams;
     ValueEventListener valueEventListener;
+    ValueEventListener valueEventListenerToCreditMoney;
 
     User userLoggedIn;
 
@@ -316,19 +317,6 @@ public class Dashboard extends AppCompatActivity {
     }
 
     private boolean checkIfAllowedToEarn() {
-        valueEventListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                userLoggedIn = dataSnapshot.getValue(User.class);
-                refForUser.removeEventListener(valueEventListener);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-        refForUser.addValueEventListener(valueEventListener);
         if (userLoggedIn.getLastEarningDate().equals("")) {
             userLoggedIn.setLastEarningDate(CalendarUtil.getToday());
             userLoggedIn.setTodayEarning(0.0);
@@ -368,7 +356,7 @@ public class Dashboard extends AppCompatActivity {
             return;
         }
 
-        Toasty.info(Dashboard.this, "Wait for 10 seconds to earn 0.01 INR", 5000).show();
+        Toasty.info(Dashboard.this, "Wait for 10 seconds to earn 0.1 INR", 5000).show();
 
         new Thread(new Runnable() {
             @Override
@@ -393,17 +381,18 @@ public class Dashboard extends AppCompatActivity {
             Toasty.error(Dashboard.this, "Ad Closed before 10 seconds.", 4000).show();
             return;
         }
-        valueEventListener = new ValueEventListener() {
+        valueEventListenerToCreditMoney = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 updateNumberOfClick();
-                refForUser.removeEventListener(valueEventListener);
+                refForUser.removeEventListener(valueEventListenerToCreditMoney);
                 if (shouldAccountBeCredited()) {
                     userLoggedIn = dataSnapshot.getValue(User.class);
                     userLoggedIn.setCurrentBalance(userLoggedIn.getCurrentBalance() + amount);
                     userLoggedIn.setCurrentBalance(round(userLoggedIn.getCurrentBalance(), 2));
                     userLoggedIn.setTodayEarning(userLoggedIn.getTodayEarning() + amount);
                     userLoggedIn.setTodayEarning(round(userLoggedIn.getTodayEarning(), 2));
+                    checkForImproperMoneyCredit(userLoggedIn.getCurrentBalance());
                     refForUser.setValue(userLoggedIn);
                     updateBalanceOnActionBar(String.valueOf(userLoggedIn.getCurrentBalance()));
                     textViewCurrentBalNav.setText(String.valueOf(userLoggedIn.getCurrentBalance() + " INR"));
@@ -419,7 +408,7 @@ public class Dashboard extends AppCompatActivity {
 
             }
         };
-        refForUser.addValueEventListener(valueEventListener);
+        refForUser.addValueEventListener(valueEventListenerToCreditMoney);
     }
 
     private void tryToShowLargerAdd() {
@@ -492,12 +481,14 @@ public class Dashboard extends AppCompatActivity {
         getSharedPreferences(KeyWords.SHARED_PREFERENCE_NAME, MODE_PRIVATE)
                 .edit()
                 .putInt(KeyWords.NUMBER_OF_CLICKS,
-                        getSharedPreferences(KeyWords.SHARED_PREFERENCE_NAME, MODE_PRIVATE).getInt(KeyWords.NUMBER_OF_CLICKS, 0) + 1)
+                        getSharedPreferences(KeyWords.SHARED_PREFERENCE_NAME, MODE_PRIVATE)
+                                .getInt(KeyWords.NUMBER_OF_CLICKS, 0) + 1)
                 .apply();
     }
 
     private boolean shouldAccountBeCredited() {
-        if (getSharedPreferences(KeyWords.SHARED_PREFERENCE_NAME, MODE_PRIVATE).getInt(KeyWords.NUMBER_OF_CLICKS, 0) == 3) {
+        if (getSharedPreferences(KeyWords.SHARED_PREFERENCE_NAME, MODE_PRIVATE)
+                .getInt(KeyWords.NUMBER_OF_CLICKS, 0) == 3) {
             getSharedPreferences(KeyWords.SHARED_PREFERENCE_NAME, MODE_PRIVATE)
                     .edit()
                     .putInt(KeyWords.NUMBER_OF_CLICKS, 0)
@@ -505,5 +496,27 @@ public class Dashboard extends AppCompatActivity {
             return false;
         }
         return true;
+    }
+
+    private void checkForImproperMoneyCredit(final double currentBalance) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(7000);
+                    if (userLoggedIn.getCurrentBalance() != currentBalance) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                userLoggedIn.setCurrentBalance(currentBalance);
+                                refForUser.setValue(userLoggedIn);
+                            }
+                        });
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 }
