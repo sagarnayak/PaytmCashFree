@@ -79,6 +79,8 @@ public class Dashboard extends AppCompatActivity {
 
     private boolean smallPriceAdClosed = true;
 
+    private double amountToAdd = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -326,6 +328,8 @@ public class Dashboard extends AppCompatActivity {
             if (userLoggedIn.getLastEarningDate().equals(CalendarUtil.getToday())) {
                 if (userLoggedIn.getTodayEarning() < dailyLimit) {
                     return true;
+                } else {
+                    return false;
                 }
             } else {
                 userLoggedIn.setLastEarningDate(CalendarUtil.getToday());
@@ -334,10 +338,15 @@ public class Dashboard extends AppCompatActivity {
                 return true;
             }
         }
-        return false;
     }
 
     private void showMediumAd() {
+        if (!NetworkUtil.isConnected(Dashboard.this)) {
+            Toasty.error(Dashboard.this, "Please connect to internet.").show();
+            finish();
+            return;
+        }
+
         if (!readyToClickAd) {
             return;
         }
@@ -376,27 +385,29 @@ public class Dashboard extends AppCompatActivity {
         }).start();
     }
 
-    private void creditMoneyToUser(final double amount) {
+    private void creditMoneyToUser(double amount) {
         if (smallPriceAdClosed) {
             Toasty.error(Dashboard.this, "Ad Closed before 10 seconds.", 4000).show();
             return;
         }
+        amountToAdd = amount;
         valueEventListenerToCreditMoney = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                updateNumberOfClick();
                 refForUser.removeEventListener(valueEventListenerToCreditMoney);
+                updateNumberOfClick();
                 if (shouldAccountBeCredited()) {
                     userLoggedIn = dataSnapshot.getValue(User.class);
-                    userLoggedIn.setCurrentBalance(userLoggedIn.getCurrentBalance() + amount);
+                    userLoggedIn.setCurrentBalance(userLoggedIn.getCurrentBalance() + amountToAdd);
                     userLoggedIn.setCurrentBalance(round(userLoggedIn.getCurrentBalance(), 2));
-                    userLoggedIn.setTodayEarning(userLoggedIn.getTodayEarning() + amount);
+                    userLoggedIn.setTodayEarning(userLoggedIn.getTodayEarning() + amountToAdd);
                     userLoggedIn.setTodayEarning(round(userLoggedIn.getTodayEarning(), 2));
                     checkForImproperMoneyCredit(userLoggedIn.getCurrentBalance());
                     refForUser.setValue(userLoggedIn);
                     updateBalanceOnActionBar(String.valueOf(userLoggedIn.getCurrentBalance()));
                     textViewCurrentBalNav.setText(String.valueOf(userLoggedIn.getCurrentBalance() + " INR"));
-                    Toasty.info(Dashboard.this, amount + " credited to you account.", 4000).show();
+                    Toasty.info(Dashboard.this, amountToAdd + " credited to your account.", 4000).show();
+                    amountToAdd = 0;
                 }
                 if (userLoggedIn.getTodayEarning() == dailyBannerThreshold)
                     tryToShowLargerAdd();
@@ -503,13 +514,14 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(7000);
+                    Thread.sleep(5000);
                     if (userLoggedIn.getCurrentBalance() != currentBalance) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 userLoggedIn.setCurrentBalance(currentBalance);
                                 refForUser.setValue(userLoggedIn);
+                                checkForImproperMoneyCredit(userLoggedIn.getCurrentBalance());
                             }
                         });
                     }
