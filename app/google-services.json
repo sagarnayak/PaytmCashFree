@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "987430655097",
-    "firebase_url": "https://paytm-cash-free-f9c1e.firebaseio.com",
-    "project_id": "paytm-cash-free-f9c1e",
-    "storage_bucket": "paytm-cash-free-f9c1e.appspot.com"
+    "project_number": "263825264844",
+    "firebase_url": "https://money-roll-paytm-cash-free.firebaseio.com",
+    "project_id": "money-roll-paytm-cash-free",
+    "storage_bucket": "money-roll-paytm-cash-free.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:987430655097:android:776b1a12a07cb660",
+        "mobilesdk_app_id": "1:263825264844:android:776b1a12a07cb660",
         "android_client_info": {
           "package_name": "com.sagar.android_projects.paytmcashfree"
         }
       },
       "oauth_client": [
         {
-          "client_id": "987430655097-cu46kjq2i9uc2jn7dft2b2fjm68nuolm.apps.googleusercontent.com",
+          "client_id": "263825264844-4urr5joo9mf8ffak2p2ebbep57spm6eq.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCu3c9YfNxd279Uo6zfgc2QNIcER-OXcfg"
+          "current_key": "AIzaSyAfGe1RV0mPoh4PfTCk-Xaetr12pIMzMkU"
         }
       ],
       "services": {
