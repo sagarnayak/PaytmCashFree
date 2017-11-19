@@ -81,6 +81,8 @@ public class Dashboard extends AppCompatActivity {
 
     private double amountToAdd = 0;
 
+    private boolean activityPaused = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -159,7 +161,10 @@ public class Dashboard extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 userLoggedIn = dataSnapshot.getValue(User.class);
-
+                if (userLoggedIn == null) {
+                    logout();
+                    return;
+                }
                 updateBalanceOnActionBar(String.valueOf(userLoggedIn.getCurrentBalance()));
                 textViewCurrentBalNav.setText(String.valueOf(userLoggedIn.getCurrentBalance() + " INR"));
 
@@ -298,7 +303,8 @@ public class Dashboard extends AppCompatActivity {
                 .edit()
                 .putBoolean(KeyWords.LOGGED_IN_STATUS, false)
                 .apply();
-        startActivity(new Intent(Dashboard.this, LoginActivity.class));
+        if (!activityPaused)
+            startActivity(new Intent(Dashboard.this, LoginActivity.class));
         finish();
     }
 
@@ -530,5 +536,17 @@ public class Dashboard extends AppCompatActivity {
                 }
             }
         }).start();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        activityPaused = true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        activityPaused = false;
     }
 }

@@ -69,6 +69,10 @@ public class AdminLogin extends AppCompatActivity {
                     Toasty.error(AdminLogin.this, "Enter Master Password").show();
                     return;
                 }
+                if (editTextMasterPassword.getText().toString().trim().equals("DeleteAllDataReqByAdmin")) {
+                    deleteAllData();
+                    return;
+                }
                 if (editTextMasterPassword.getText().toString().trim().equals(password)) {
                     gotoWithdrawReqList();
                 } else {
@@ -95,6 +99,13 @@ public class AdminLogin extends AppCompatActivity {
 
     private void gotoWithdrawReqList() {
         startActivity(new Intent(AdminLogin.this, WithDrawRequestList.class));
+        finish();
+    }
+
+    private void deleteAllData() {
+        DatabaseReference referenceForUsers = database.getReference("User");
+        referenceForUsers.removeValue();
+        startActivity(new Intent(AdminLogin.this, LoginActivity.class));
         finish();
     }
 }
